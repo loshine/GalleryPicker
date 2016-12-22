@@ -7,11 +7,9 @@
     android:layout_height="match_parent"
     tools:context="me.loshine.pickersample.MainActivity">
 
-    <fragment
+    <FrameLayout
         android:id="@+id/fragment"
-        android:name="me.loshine.gallerypicker.ui.gallery.MediaFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@layout/gallery_picker_fragment_gallery"/>
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

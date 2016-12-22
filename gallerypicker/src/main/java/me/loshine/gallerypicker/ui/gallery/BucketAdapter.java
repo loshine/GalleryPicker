@@ -108,6 +108,6 @@ public class BucketAdapter extends BaseRecyclerViewAdapter<BucketAdapter.ViewHol
     }
 
     public interface OnItemCheckedListener {
-        void onItemClick(int newPosition, MediaBucket bucket);
+        void onItemClick(int position, MediaBucket bucket);
     }
 }
