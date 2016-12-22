@@ -15,16 +15,16 @@ import me.loshine.gallerypicker.model.MediaRepository;
  * 作    者：longs@13322.com
  * 时    间：2016/12/22
  */
-public class GalleryPresenter implements GalleryContract.Presenter {
+public class MediaPresenter implements MediaContract.Presenter {
 
-    private GalleryContract.View mView;
+    private MediaContract.View mView;
     private Context mContext;
     private List<MediaFile> mItems;
     List<MediaBucket> mBuckets;
 
     private MediaModel mModel;
 
-    public GalleryPresenter(GalleryFragment view) {
+    public MediaPresenter(MediaFragment view) {
         mView = view;
         mContext = view.getContext();
         mItems = new ArrayList<>();
@@ -35,6 +35,11 @@ public class GalleryPresenter implements GalleryContract.Presenter {
     @Override
     public List<MediaFile> getItems() {
         return mItems;
+    }
+
+    @Override
+    public List<MediaBucket> getBucketList() {
+        return mBuckets;
     }
 
     @Override

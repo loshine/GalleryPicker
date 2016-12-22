@@ -20,17 +20,17 @@ import me.loshine.gallerypicker.entity.MediaFile;
  * 作    者：longs@13322.com
  * 时    间：2016/12/22
  */
-public class GalleryAdapter extends BaseRecyclerViewAdapter<GalleryAdapter.ViewHolder> {
+public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolder> {
 
     private List<MediaFile> mItems;
 
-    public GalleryAdapter(@NonNull List<MediaFile> files) {
+    public MediaAdapter(@NonNull List<MediaFile> files) {
         mItems = files;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.galley_picker_media_grid, parent, false);
+        View view = inflater.inflate(R.layout.galley_picker_media_grid_item, parent, false);
         return new ViewHolder(view);
     }
 

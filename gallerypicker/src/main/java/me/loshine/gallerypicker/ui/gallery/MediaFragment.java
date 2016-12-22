@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +17,20 @@ import me.loshine.gallerypicker.R;
  * 作    者：longs@13322.com
  * 时    间：2016/12/22
  */
-public class GalleryFragment extends Fragment implements GalleryContract.View {
+public class MediaFragment extends Fragment implements MediaContract.View {
 
     RecyclerView mRecyclerView;
+    RecyclerView mBucketRecyclerView;
 
-    GalleryAdapter mAdapter;
+    MediaAdapter mAdapter;
+    BucketAdapter mBucketAdapter;
 
-    private GalleryContract.Presenter mPresenter;
+    private MediaContract.Presenter mPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new GalleryPresenter(this);
+        mPresenter = new MediaPresenter(this);
     }
 
     @Nullable
@@ -44,8 +47,14 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         // item 高度确定的情况下可以提升性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        mAdapter = new GalleryAdapter(mPresenter.getItems());
+        mAdapter = new MediaAdapter(mPresenter.getItems());
         mRecyclerView.setAdapter(mAdapter);
+
+        mBucketRecyclerView = (RecyclerView) view.findViewById(R.id.bucket_recycler_view);
+        mBucketRecyclerView.setHasFixedSize(true);
+        mBucketRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBucketAdapter = new BucketAdapter(mPresenter.getBucketList());
+        mBucketRecyclerView.setAdapter(mBucketAdapter);
 
         mPresenter.load();
     }
@@ -53,5 +62,6 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     @Override
     public void onLoadComplete() {
         mAdapter.notifyDataSetChanged();
+        mBucketAdapter.notifyDataSetChanged();
     }
 }

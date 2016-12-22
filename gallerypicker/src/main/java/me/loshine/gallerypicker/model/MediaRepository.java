@@ -144,6 +144,7 @@ public class MediaRepository implements MediaModel {
             allMediaBucket.setBucketName(mContext.getString(R.string.gallery_all_video));
             uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         }
+        allMediaBucket.setChecked(true);
         bucketList.add(allMediaBucket);
         Cursor cursor = null;
         try {

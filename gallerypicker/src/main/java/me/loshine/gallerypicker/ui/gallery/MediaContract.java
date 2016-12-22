@@ -2,6 +2,7 @@ package me.loshine.gallerypicker.ui.gallery;
 
 import java.util.List;
 
+import me.loshine.gallerypicker.entity.MediaBucket;
 import me.loshine.gallerypicker.entity.MediaFile;
 
 /**
@@ -9,7 +10,7 @@ import me.loshine.gallerypicker.entity.MediaFile;
  * 作    者：longs@13322.com
  * 时    间：2016/12/22
  */
-public interface GalleryContract {
+public interface MediaContract {
 
     interface View {
 
@@ -19,6 +20,8 @@ public interface GalleryContract {
     interface Presenter {
 
         List<MediaFile> getItems();
+
+        List<MediaBucket> getBucketList();
 
         void load();
     }

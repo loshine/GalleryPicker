@@ -14,6 +14,8 @@ public class MediaBucket {
     //图片方向
     private int orientation;
 
+    private boolean isChecked;
+
     public String getBucketId() {
         return bucketId;
     }
@@ -52,6 +54,14 @@ public class MediaBucket {
 
     public void setOrientation(int orientation) {
         this.orientation = orientation;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     @Override
