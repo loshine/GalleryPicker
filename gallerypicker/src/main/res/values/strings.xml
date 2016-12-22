@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">GalleryPicker</string>
     <string name="preview_default">预览</string>
-    <string name="preview_with_num">预览(%1$s)</string>
+    <string name="preview_with_num">预览(%1$)</string>
     <string name="gallery_all_image">所有图片</string>
     <string name="gallery_all_video">所有视频</string>
+    <string name="gallery_bucket_image_count">%1$d张</string>
 </resources>

@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import me.loshine.gallerypicker.R;
+import me.loshine.gallerypicker.entity.MediaBucket;
 
 /**
  * 描    述：
@@ -21,6 +23,8 @@ public class MediaFragment extends Fragment implements MediaContract.View {
 
     RecyclerView mRecyclerView;
     RecyclerView mBucketRecyclerView;
+
+    TextView mBucketNameTextView;
 
     MediaAdapter mAdapter;
     BucketAdapter mBucketAdapter;
@@ -44,16 +48,27 @@ public class MediaFragment extends Fragment implements MediaContract.View {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mBucketRecyclerView = (RecyclerView) view.findViewById(R.id.bucket_recycler_view);
+        mBucketNameTextView = (TextView) view.findViewById(R.id.bucket_name);
+
         // item 高度确定的情况下可以提升性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mAdapter = new MediaAdapter(mPresenter.getItems());
         mRecyclerView.setAdapter(mAdapter);
 
-        mBucketRecyclerView = (RecyclerView) view.findViewById(R.id.bucket_recycler_view);
         mBucketRecyclerView.setHasFixedSize(true);
         mBucketRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBucketRecyclerView.setItemAnimator(null);
         mBucketAdapter = new BucketAdapter(mPresenter.getBucketList());
+        mBucketAdapter.setOnItemCheckedListener(new BucketAdapter.OnItemCheckedListener() {
+            @Override
+            public void onItemClick(int position, MediaBucket bucket) {
+                bucket.setChecked(true);
+                mBucketAdapter.notifyItemChanged(position);
+                mBucketNameTextView.setText(bucket.getBucketName());
+            }
+        });
         mBucketRecyclerView.setAdapter(mBucketAdapter);
 
         mPresenter.load();

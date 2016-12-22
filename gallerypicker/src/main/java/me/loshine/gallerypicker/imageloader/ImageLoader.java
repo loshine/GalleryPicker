@@ -12,13 +12,23 @@ import android.widget.ImageView;
  */
 public interface ImageLoader {
 
-    void displayImage(Context context,
-                      String path,
-                      ImageView imageView,
-                      Drawable defaultDrawable,
-                      Bitmap.Config config,
-                      boolean resize,
-                      int width,
-                      int height,
-                      int rotate);
+    void display(Context context,
+                 String path,
+                 ImageView imageView,
+                 Drawable defaultDrawable,
+                 Bitmap.Config config,
+                 boolean resize,
+                 int width,
+                 int height,
+                 int rotate);
+
+    void displayCenterCrop(Context context,
+                           String path,
+                           ImageView imageView,
+                           Drawable defaultDrawable,
+                           Bitmap.Config config,
+                           boolean resize,
+                           int width,
+                           int height,
+                           int rotate);
 }

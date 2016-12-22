@@ -25,17 +25,39 @@ import me.loshine.gallerypicker.entity.MediaBucket;
  */
 public class BucketAdapter extends BaseRecyclerViewAdapter<BucketAdapter.ViewHolder> {
 
-    private List<MediaBucket> mBuckets;
+    private final List<MediaBucket> mBuckets;
     private Drawable mDefaultImage;
+
+    private OnItemCheckedListener mOnItemCheckedListener;
 
     public BucketAdapter(List<MediaBucket> buckets) {
         mBuckets = buckets;
     }
 
+    public void setOnItemCheckedListener(OnItemCheckedListener onItemCheckedListener) {
+        mOnItemCheckedListener = onItemCheckedListener;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.gallery_picker_bucket_list_item, parent, false);
-        return new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view);
+        if (mOnItemCheckedListener != null) {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for (MediaBucket mediaBucket : mBuckets) {
+                        if (mediaBucket.isChecked()) {
+                            mediaBucket.setChecked(false);
+                            notifyItemChanged(mBuckets.indexOf(mediaBucket));
+                        }
+                    }
+                    int adapterPosition = viewHolder.getAdapterPosition();
+                    mOnItemCheckedListener.onItemClick(adapterPosition, mBuckets.get(adapterPosition));
+                }
+            });
+        }
+        return viewHolder;
     }
 
     @Override
@@ -59,24 +81,33 @@ public class BucketAdapter extends BaseRecyclerViewAdapter<BucketAdapter.ViewHol
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImageView;
-        TextView mTextView;
+        TextView mNameTextView;
+        TextView mCountTextView;
         RadioButton mRadioButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mImageView = (ImageView) itemView.findViewById(R.id.bucket_cover);
-            mTextView = (TextView) itemView.findViewById(R.id.bucket_name);
+            mNameTextView = (TextView) itemView.findViewById(R.id.bucket_name);
+            mCountTextView = (TextView) itemView.findViewById(R.id.bucket_num);
             mRadioButton = (RadioButton) itemView.findViewById(R.id.radio_button);
         }
 
         public void bind(MediaBucket bucket) {
             String path = bucket.getCover();
             GalleryPicker.INSTANCE.getImageLoader()
-                    .displayImage(mContext, path, mImageView, mDefaultImage,
+                    .displayCenterCrop(mContext, path, mImageView, mDefaultImage,
                             GalleryPicker.INSTANCE.getImageConfig(),
                             true, 100, 100, bucket.getOrientation());
-            mTextView.setText(bucket.getBucketName());
+            mNameTextView.setText(bucket.getBucketName());
+            String countString = mContext.getString(R.string.gallery_bucket_image_count,
+                    bucket.getImageCount());
+            mCountTextView.setText(countString);
             mRadioButton.setVisibility(bucket.isChecked() ? View.VISIBLE : View.GONE);
         }
+    }
+
+    public interface OnItemCheckedListener {
+        void onItemClick(int newPosition, MediaBucket bucket);
     }
 }

@@ -72,6 +72,17 @@ public class MediaBucket {
         MediaBucket that = (MediaBucket) o;
 
         return bucketId != null ? bucketId.equals(that.bucketId) : that.bucketId == null;
+    }
 
+    @Override
+    public String toString() {
+        return "MediaBucket{" +
+                "bucketId='" + bucketId + '\'' +
+                ", bucketName='" + bucketName + '\'' +
+                ", imageCount=" + imageCount +
+                ", cover='" + cover + '\'' +
+                ", orientation=" + orientation +
+                ", isChecked=" + isChecked +
+                '}';
     }
 }
