@@ -39,11 +39,6 @@ public class MediaFile implements Parcelable {
     private String bucketId;
     private String bucketDisplayName;
 
-    //大缩略图
-    private String thumbnailBigPath;
-    //小缩略图
-    private String thumbnailSmallPath;
-
     // 是否已被选中
     private boolean isChecked;
 
@@ -159,22 +154,6 @@ public class MediaFile implements Parcelable {
         this.bucketDisplayName = bucketDisplayName;
     }
 
-    public String getThumbnailBigPath() {
-        return thumbnailBigPath;
-    }
-
-    public void setThumbnailBigPath(String thumbnailBigPath) {
-        this.thumbnailBigPath = thumbnailBigPath;
-    }
-
-    public String getThumbnailSmallPath() {
-        return thumbnailSmallPath;
-    }
-
-    public void setThumbnailSmallPath(String thumbnailSmallPath) {
-        this.thumbnailSmallPath = thumbnailSmallPath;
-    }
-
     public boolean isChecked() {
         return isChecked;
     }
@@ -216,8 +195,6 @@ public class MediaFile implements Parcelable {
                 ", length=" + length +
                 ", bucketId='" + bucketId + '\'' +
                 ", bucketDisplayName='" + bucketDisplayName + '\'' +
-                ", thumbnailBigPath='" + thumbnailBigPath + '\'' +
-                ", thumbnailSmallPath='" + thumbnailSmallPath + '\'' +
                 '}';
     }
 
@@ -245,8 +222,6 @@ public class MediaFile implements Parcelable {
         dest.writeLong(this.length);
         dest.writeString(this.bucketId);
         dest.writeString(this.bucketDisplayName);
-        dest.writeString(this.thumbnailBigPath);
-        dest.writeString(this.thumbnailSmallPath);
         dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
     }
 
@@ -265,8 +240,6 @@ public class MediaFile implements Parcelable {
         this.length = in.readLong();
         this.bucketId = in.readString();
         this.bucketDisplayName = in.readString();
-        this.thumbnailBigPath = in.readString();
-        this.thumbnailSmallPath = in.readString();
         this.isChecked = in.readByte() != 0;
     }
 

@@ -1,6 +1,8 @@
 package me.loshine.gallerypicker.ui.gallery;
 
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +13,11 @@ import android.widget.ImageView;
 
 import java.util.List;
 
+import me.loshine.gallerypicker.GalleryPicker;
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.base.BaseRecyclerViewAdapter;
 import me.loshine.gallerypicker.entity.MediaFile;
+import me.loshine.gallerypicker.utils.DisplayUtils;
 
 /**
  * 描    述：
@@ -23,6 +27,8 @@ import me.loshine.gallerypicker.entity.MediaFile;
 public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolder> {
 
     private List<MediaFile> mItems;
+    private ColorDrawable mDefaultImage;
+    private int mImageSize;
 
     public MediaAdapter(@NonNull List<MediaFile> files) {
         mItems = files;
@@ -36,6 +42,7 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        maybeInit();
         MediaFile mediaFile = mItems.get(position);
         holder.bind(mediaFile);
     }
@@ -43,6 +50,16 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
     @Override
     public int getItemCount() {
         return mItems.size();
+    }
+
+    private void maybeInit() {
+        if (mDefaultImage == null) {
+            int color = ContextCompat.getColor(mContext, android.R.color.darker_gray);
+            mDefaultImage = new ColorDrawable(color);
+        }
+        if (mImageSize == 0) {
+            mImageSize = DisplayUtils.getScreenWidth(mContext) / 3;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,6 +81,10 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
         }
 
         public void bind(MediaFile mediaFile) {
+            GalleryPicker.INSTANCE.getImageLoader()
+                    .displayCenterCrop(mContext, mediaFile.getOriginalPath(), mImageView, mDefaultImage,
+                            GalleryPicker.INSTANCE.getImageConfig(),
+                            true, mImageSize, mImageSize, mediaFile.getOrientation());
             mCheckBox.setChecked(mediaFile.isChecked());
         }
     }

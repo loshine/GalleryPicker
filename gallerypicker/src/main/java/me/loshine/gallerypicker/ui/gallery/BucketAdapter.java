@@ -53,7 +53,7 @@ public class BucketAdapter extends BaseRecyclerViewAdapter<BucketAdapter.ViewHol
                         }
                     }
                     int adapterPosition = viewHolder.getAdapterPosition();
-                    mOnItemCheckedListener.onItemClick(adapterPosition, mBuckets.get(adapterPosition));
+                    mOnItemCheckedListener.onItemChecked(adapterPosition, mBuckets.get(adapterPosition));
                 }
             });
         }
@@ -108,6 +108,6 @@ public class BucketAdapter extends BaseRecyclerViewAdapter<BucketAdapter.ViewHol
     }
 
     public interface OnItemCheckedListener {
-        void onItemClick(int position, MediaBucket bucket);
+        void onItemChecked(int position, MediaBucket bucket);
     }
 }

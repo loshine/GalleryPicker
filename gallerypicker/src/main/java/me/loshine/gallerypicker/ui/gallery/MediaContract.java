@@ -24,5 +24,7 @@ public interface MediaContract {
         List<MediaBucket> getBucketList();
 
         void load();
+
+        void reloadMediaList(String bucketId);
     }
 }

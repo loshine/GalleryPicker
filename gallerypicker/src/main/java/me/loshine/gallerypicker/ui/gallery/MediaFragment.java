@@ -143,11 +143,12 @@ public class MediaFragment extends BaseFragment
     }
 
     @Override
-    public void onItemClick(int position, MediaBucket bucket) {
+    public void onItemChecked(int position, MediaBucket bucket) {
         bucket.setChecked(true);
         mBucketAdapter.notifyItemChanged(position);
         mBucketNameTextView.setText(bucket.getBucketName());
         mBucketNameTextView.setEnabled(false);
+        mPresenter.reloadMediaList(bucket.getBucketId());
         if (mBucketOverview.isShown()) {
             new SlideOutUnderneathAnimation(mBucketRecyclerView)
                     .setDirection(Animation.DIRECTION_DOWN)

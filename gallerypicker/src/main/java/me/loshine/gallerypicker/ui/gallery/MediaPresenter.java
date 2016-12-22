@@ -45,6 +45,13 @@ public class MediaPresenter implements MediaContract.Presenter {
     @Override
     public void load() {
         mBuckets.addAll(mModel.getImageBucket());
+        MediaBucket defaultBucket = mBuckets.get(0);
+        mItems.addAll(mModel.getImageMediaList(defaultBucket.getBucketId(), 1, 40));
         mView.onLoadComplete();
+    }
+
+    @Override
+    public void reloadMediaList(String bucketId) {
+
     }
 }

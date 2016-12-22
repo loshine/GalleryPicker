@@ -18,7 +18,6 @@ import java.util.List;
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.entity.MediaBucket;
 import me.loshine.gallerypicker.entity.MediaFile;
-import me.loshine.gallerypicker.utils.ThumbnailUtils;
 
 /**
  * 描    述：
@@ -84,8 +83,12 @@ public class MediaRepository implements MediaModel {
                 MediaStore.Images.Media.MIME_TYPE + "=? or " +
                 MediaStore.Images.Media.MIME_TYPE + "=?";
         String[] selectionArgs = {"image/jpeg", "image/png", "image/gif"};*/
-        String selection = MediaStore.Images.Media.BUCKET_ID + "=?";
-        String[] selectionArgs = {bucketId};
+        String selection = null;
+        String[] selectionArgs = null;
+        if (!String.valueOf(Integer.MIN_VALUE).equals(bucketId)) {
+            selection = MediaStore.Images.Media.BUCKET_ID + "=?";
+            selectionArgs = new String[]{bucketId};
+        }
         String sortOrder = MediaStore.Images.Media.DATE_ADDED
                 + " DESC LIMIT " + pageSize + " OFFSET " + offset;
         Cursor cursor = mContext.getContentResolver()
@@ -249,10 +252,6 @@ public class MediaRepository implements MediaModel {
         mediaBean.setCreateDate(createDate);
         long modifiedDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
         mediaBean.setModifiedDate(modifiedDate);
-        File thumbnailBig = ThumbnailUtils.createThumbnailBigFileName(context, originalPath);
-        mediaBean.setThumbnailBigPath(thumbnailBig.getAbsolutePath());
-        File thumbnailSmall = ThumbnailUtils.createThumbnailSmallFileName(context, originalPath);
-        mediaBean.setThumbnailSmallPath(thumbnailSmall.getAbsolutePath());
         int width = 0, height = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
