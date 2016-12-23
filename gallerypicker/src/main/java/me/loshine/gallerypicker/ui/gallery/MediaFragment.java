@@ -175,7 +175,7 @@ public class MediaFragment extends BaseFragment
     @Override
     public void onItemChecked(int position, MediaBucket bucket) {
         bucket.setChecked(true);
-        mBucketAdapter.notifyItemChanged(position - 1);
+        mBucketAdapter.notifyItemChanged(position);
         mBucketNameTextView.setText(bucket.getBucketName());
         mBucketNameTextView.setEnabled(false);
         mPresenter.reloadMediaList(bucket);
