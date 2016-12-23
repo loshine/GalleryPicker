@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -20,12 +21,12 @@ public class PicassoImageLoader implements ImageLoader {
 
     @Override
     public void display(Context context, String path, ImageView imageView, Drawable defaultDrawable,
-                        Bitmap.Config config, boolean resize, int width, int height, int rotate) {
+                        Bitmap.Config config, boolean resize, int width, int height) {
         RequestCreator creator = Picasso.with(context)
                 .load(new File(path))
                 .placeholder(defaultDrawable)
                 .error(defaultDrawable)
-                .rotate(rotate)
+//                .rotate(rotate)
                 .networkPolicy(NetworkPolicy.NO_STORE)
                 .config(config)
                 .tag(context);
@@ -37,12 +38,13 @@ public class PicassoImageLoader implements ImageLoader {
 
     @Override
     public void displayCenterCrop(Context context, String path, ImageView imageView, Drawable defaultDrawable,
-                                  Bitmap.Config config, boolean resize, int width, int height, int rotate) {
+                                  Bitmap.Config config, boolean resize, int width, int height) {
         RequestCreator creator = Picasso.with(context)
                 .load(new File(path))
                 .placeholder(defaultDrawable)
                 .error(defaultDrawable)
-                .rotate(rotate)
+//                .rotate(rotate)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .networkPolicy(NetworkPolicy.NO_STORE)
                 .config(config)
                 .tag(context);

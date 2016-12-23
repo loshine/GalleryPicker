@@ -96,9 +96,9 @@ public class BucketAdapter extends BaseRecyclerViewAdapter<BucketAdapter.ViewHol
         public void bind(MediaBucket bucket) {
             String path = bucket.getCover();
             GalleryPicker.INSTANCE.getImageLoader()
-                    .displayCenterCrop(mContext, path, mImageView, mDefaultImage,
+                    .display(mContext, path, mImageView, mDefaultImage,
                             GalleryPicker.INSTANCE.getImageConfig(),
-                            true, 100, 100, bucket.getOrientation());
+                            true, 100, 100);
             mNameTextView.setText(bucket.getBucketName());
             if (getAdapterPosition() == 0) {
                 mCountTextView.setVisibility(View.GONE);

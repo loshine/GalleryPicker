@@ -54,7 +54,7 @@ public class PreviewFragment extends BaseFragment {
         GalleryPicker.INSTANCE.getImageLoader()
                 .display(getContext(), mMediaFile.getOriginalPath(), mPhotoView, drawable,
                         GalleryPicker.INSTANCE.getImageConfig(),
-                        false, 0, 0, mMediaFile.getOrientation());
+                        false, 0, 0);
     }
 
     public static PreviewFragment newInstance(@NonNull MediaFile file) {

@@ -19,8 +19,7 @@ public interface ImageLoader {
                  Bitmap.Config config,
                  boolean resize,
                  int width,
-                 int height,
-                 int rotate);
+                 int height);
 
     void displayCenterCrop(Context context,
                            String path,
@@ -29,6 +28,5 @@ public interface ImageLoader {
                            Bitmap.Config config,
                            boolean resize,
                            int width,
-                           int height,
-                           int rotate);
+                           int height);
 }

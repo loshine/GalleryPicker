@@ -20,7 +20,7 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public void display(Context context, String path, ImageView imageView, Drawable defaultDrawable,
-                        Bitmap.Config config, boolean resize, int width, int height, int rotate) {
+                        Bitmap.Config config, boolean resize, int width, int height) {
         DrawableRequestBuilder builder = Glide.with(context)
                 .load(new File(path))
                 .placeholder(defaultDrawable);
@@ -28,14 +28,13 @@ public class GlideImageLoader implements ImageLoader {
             builder = builder.override(width, height);
         }
         builder.crossFade()
-                .transform(new RotateTransformation(context, rotate))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView);
     }
 
     @Override
     public void displayCenterCrop(Context context, String path, ImageView imageView, Drawable defaultDrawable,
-                                  Bitmap.Config config, boolean resize, int width, int height, int rotate) {
+                                  Bitmap.Config config, boolean resize, int width, int height) {
         DrawableRequestBuilder builder = Glide.with(context)
                 .load(new File(path))
                 .placeholder(defaultDrawable);
@@ -43,8 +42,8 @@ public class GlideImageLoader implements ImageLoader {
             builder = builder.override(width, height);
         }
         builder.crossFade()
-                .transform(new RotateTransformation(context, rotate))
                 .centerCrop()
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView);
     }
