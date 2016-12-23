@@ -20,7 +20,8 @@ public class MediaPresenter implements MediaContract.Presenter {
     private MediaContract.View mView;
     private Context mContext;
     private List<MediaFile> mItems;
-    List<MediaBucket> mBuckets;
+    private List<MediaBucket> mBuckets;
+    private MediaBucket mMediaBucket;
 
     private MediaModel mModel;
 
@@ -45,13 +46,16 @@ public class MediaPresenter implements MediaContract.Presenter {
     @Override
     public void load() {
         mBuckets.addAll(mModel.getImageBucket());
-        MediaBucket defaultBucket = mBuckets.get(0);
-        mItems.addAll(mModel.getImageMediaList(defaultBucket.getBucketId(), 1, 40));
+        mMediaBucket = mBuckets.get(0);
+        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), 1, 40));
         mView.onLoadComplete();
     }
 
     @Override
-    public void reloadMediaList(String bucketId) {
-
+    public void reloadMediaList(MediaBucket mediaBucket) {
+        mMediaBucket = mediaBucket;
+        mItems.clear();
+        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), 1, 40));
+        mView.onReloadComplete();
     }
 }

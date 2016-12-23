@@ -11,12 +11,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import me.loshine.gallerypicker.GalleryPicker;
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.base.BaseRecyclerViewAdapter;
 import me.loshine.gallerypicker.entity.MediaFile;
+import me.loshine.gallerypicker.imageloader.ImageLoader;
 import me.loshine.gallerypicker.utils.DisplayUtils;
 
 /**
@@ -36,7 +39,7 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
 
     @Override
     public ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.galley_picker_media_grid_item, parent, false);
+        View view = inflater.inflate(R.layout.gallery_picker_media_grid_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -81,8 +84,8 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
         }
 
         public void bind(MediaFile mediaFile) {
-            GalleryPicker.INSTANCE.getImageLoader()
-                    .displayCenterCrop(mContext, mediaFile.getOriginalPath(), mImageView, mDefaultImage,
+            ImageLoader imageLoader = GalleryPicker.INSTANCE.getImageLoader();
+            imageLoader.displayCenterCrop(mContext, mediaFile.getOriginalPath(), mImageView, mDefaultImage,
                             GalleryPicker.INSTANCE.getImageConfig(),
                             true, mImageSize, mImageSize, mediaFile.getOrientation());
             mCheckBox.setChecked(mediaFile.isChecked());

@@ -100,9 +100,14 @@ public class BucketAdapter extends BaseRecyclerViewAdapter<BucketAdapter.ViewHol
                             GalleryPicker.INSTANCE.getImageConfig(),
                             true, 100, 100, bucket.getOrientation());
             mNameTextView.setText(bucket.getBucketName());
-            String countString = mContext.getString(R.string.gallery_bucket_image_count,
-                    bucket.getImageCount());
-            mCountTextView.setText(countString);
+            if (getAdapterPosition() == 0) {
+                mCountTextView.setVisibility(View.GONE);
+            } else {
+                mCountTextView.setVisibility(View.VISIBLE);
+                String countString = mContext.getString(R.string.gallery_bucket_image_count,
+                        bucket.getImageCount());
+                mCountTextView.setText(countString);
+            }
             mRadioButton.setVisibility(bucket.isChecked() ? View.VISIBLE : View.GONE);
         }
     }

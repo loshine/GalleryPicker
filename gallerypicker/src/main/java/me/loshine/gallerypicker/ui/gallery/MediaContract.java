@@ -15,6 +15,8 @@ public interface MediaContract {
     interface View {
 
         void onLoadComplete();
+
+        void onReloadComplete();
     }
 
     interface Presenter {
@@ -25,6 +27,6 @@ public interface MediaContract {
 
         void load();
 
-        void reloadMediaList(String bucketId);
+        void reloadMediaList(MediaBucket mediaBucket);
     }
 }

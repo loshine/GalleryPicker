@@ -6,8 +6,8 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity android:name=".ui.MediaActivity">
-        </activity>
+        <activity android:name=".ui.MediaActivity"/>
+        <activity android:name=".ui.preview.PreviewActivity"/>
     </application>
 
 </manifest>

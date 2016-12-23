@@ -10,13 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.anim.Animation;
 import me.loshine.gallerypicker.anim.AnimationListener;
 import me.loshine.gallerypicker.anim.SlideInUnderneathAnimation;
 import me.loshine.gallerypicker.anim.SlideOutUnderneathAnimation;
 import me.loshine.gallerypicker.base.BaseFragment;
+import me.loshine.gallerypicker.base.BaseRecyclerViewAdapter;
 import me.loshine.gallerypicker.entity.MediaBucket;
+import me.loshine.gallerypicker.entity.MediaFile;
+import me.loshine.gallerypicker.ui.preview.PreviewActivity;
 
 /**
  * 描    述：
@@ -64,6 +70,13 @@ public class MediaFragment extends BaseFragment
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mAdapter = new MediaAdapter(mPresenter.getItems());
+        mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                List<MediaFile> items = mPresenter.getItems();
+                PreviewActivity.start(getContext(), new ArrayList<>(items), position);
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
 
         mBucketRecyclerView.setHasFixedSize(true);
@@ -97,6 +110,11 @@ public class MediaFragment extends BaseFragment
     public void onLoadComplete() {
         mAdapter.notifyDataSetChanged();
         mBucketAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onReloadComplete() {
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -148,7 +166,7 @@ public class MediaFragment extends BaseFragment
         mBucketAdapter.notifyItemChanged(position);
         mBucketNameTextView.setText(bucket.getBucketName());
         mBucketNameTextView.setEnabled(false);
-        mPresenter.reloadMediaList(bucket.getBucketId());
+        mPresenter.reloadMediaList(bucket);
         if (mBucketOverview.isShown()) {
             new SlideOutUnderneathAnimation(mBucketRecyclerView)
                     .setDirection(Animation.DIRECTION_DOWN)
