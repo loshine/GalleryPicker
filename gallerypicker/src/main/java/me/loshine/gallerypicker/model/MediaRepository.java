@@ -10,7 +10,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +98,7 @@ public class MediaRepository implements MediaModel {
             if (count > 0) {
                 cursor.moveToFirst();
                 do {
-                    MediaFile mediaFile = parseImageMediaFileFromCursor(mContext, cursor);
+                    MediaFile mediaFile = parseMediaFileFromCursor(cursor, true);
                     list.add(mediaFile);
                 } while (cursor.moveToNext());
             }
@@ -110,6 +109,72 @@ public class MediaRepository implements MediaModel {
         }
         cursor = null;
         return list;
+    }
+
+    @Override
+    public List<MediaFile> getVideoMediaList(String bucketId, int pageIndex, int pageSize) {
+        int offset = (pageIndex - 1) * pageSize;
+        List<MediaFile> mediaBeanList = new ArrayList<>();
+        ContentResolver contentResolver = mContext.getContentResolver();
+        String[] columns;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            columns = new String[]{
+                    MediaStore.Video.Media._ID,
+                    MediaStore.Video.Media.TITLE,
+                    MediaStore.Video.Media.DATA,
+                    MediaStore.Video.Media.BUCKET_ID,
+                    MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+                    MediaStore.Video.Media.MIME_TYPE,
+                    MediaStore.Video.Media.DATE_ADDED,
+                    MediaStore.Video.Media.DATE_MODIFIED,
+                    MediaStore.Video.Media.LATITUDE,
+                    MediaStore.Video.Media.LONGITUDE,
+                    MediaStore.Video.Media.SIZE,
+                    MediaStore.Video.Media.WIDTH,
+                    MediaStore.Video.Media.HEIGHT
+            };
+        } else {
+            columns = new String[]{
+                    MediaStore.Video.Media._ID,
+                    MediaStore.Video.Media.TITLE,
+                    MediaStore.Video.Media.DATA,
+                    MediaStore.Video.Media.BUCKET_ID,
+                    MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+                    MediaStore.Video.Media.MIME_TYPE,
+                    MediaStore.Video.Media.DATE_ADDED,
+                    MediaStore.Video.Media.DATE_MODIFIED,
+                    MediaStore.Video.Media.LATITUDE,
+                    MediaStore.Video.Media.LONGITUDE,
+                    MediaStore.Video.Media.SIZE
+            };
+        }
+        String selection = null;
+        String[] selectionArgs = null;
+        if (!TextUtils.equals(bucketId, String.valueOf(Integer.MIN_VALUE))) {
+            selection = MediaStore.Video.Media.BUCKET_ID + "=?";
+            selectionArgs = new String[]{bucketId};
+        }
+
+        Cursor cursor = contentResolver.query(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI, columns, selection,
+                selectionArgs, MediaStore.Video.Media.DATE_ADDED + " DESC LIMIT " + pageSize + " OFFSET " + offset);
+        if (cursor != null) {
+            int count = cursor.getCount();
+            if (count > 0) {
+                cursor.moveToFirst();
+                do {
+                    MediaFile mediaFile = parseMediaFileFromCursor(cursor, false);
+                    mediaBeanList.add(mediaFile);
+                } while (cursor.moveToNext());
+            }
+        }
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        cursor = null;
+        return mediaBeanList;
     }
 
     /**
@@ -230,28 +295,27 @@ public class MediaRepository implements MediaModel {
     /**
      * 从 Cursor 对象中转化 图片类型的 MediaFile 并创建缩略图
      *
-     * @param context context
-     * @param cursor  cursor
+     * @param cursor cursor
      * @return MediaFile
      */
-    private MediaFile parseImageMediaFileFromCursor(Context context, Cursor cursor) {
-        MediaFile mediaBean = new MediaFile();
+    private MediaFile parseMediaFileFromCursor(Cursor cursor, boolean isImage) {
+        MediaFile mediaFile = new MediaFile();
         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID));
-        mediaBean.setId(id);
+        mediaFile.setId(id);
         String title = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.TITLE));
-        mediaBean.setTitle(title);
+        mediaFile.setTitle(title);
         String originalPath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        mediaBean.setOriginalPath(originalPath);
+        mediaFile.setOriginalPath(originalPath);
         String bucketId = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID));
-        mediaBean.setBucketId(bucketId);
+        mediaFile.setBucketId(bucketId);
         String bucketDisplayName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
-        mediaBean.setBucketDisplayName(bucketDisplayName);
+        mediaFile.setBucketDisplayName(bucketDisplayName);
         String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
-        mediaBean.setMimeType(mimeType);
+        mediaFile.setMimeType(mimeType);
         long createDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-        mediaBean.setCreateDate(createDate);
+        mediaFile.setCreateDate(createDate);
         long modifiedDate = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED));
-        mediaBean.setModifiedDate(modifiedDate);
+        mediaFile.setModifiedDate(modifiedDate);
         int width = 0, height = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
@@ -265,17 +329,20 @@ public class MediaRepository implements MediaModel {
                 Log.e("MediaModel", e.getLocalizedMessage());
             }
         }
-        mediaBean.setWidth(width);
-        mediaBean.setHeight(height);
+        mediaFile.setWidth(width);
+        mediaFile.setHeight(height);
         double latitude = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LATITUDE));
-        mediaBean.setLatitude(latitude);
+        mediaFile.setLatitude(latitude);
         double longitude = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.Media.LONGITUDE));
-        mediaBean.setLongitude(longitude);
-        int orientation = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.ORIENTATION));
-        mediaBean.setOrientation(orientation);
-        long length = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));
-        mediaBean.setLength(length);
+        mediaFile.setLongitude(longitude);
+        if (isImage) {
+            int orientation = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.ORIENTATION));
+            mediaFile.setOrientation(orientation);
+        } else {
+            long length = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+            mediaFile.setLength(length);
+        }
 
-        return mediaBean;
+        return mediaFile;
     }
 }

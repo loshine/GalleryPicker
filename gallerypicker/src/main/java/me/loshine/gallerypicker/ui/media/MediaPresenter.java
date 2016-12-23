@@ -1,10 +1,11 @@
-package me.loshine.gallerypicker.ui.gallery;
+package me.loshine.gallerypicker.ui.media;
 
 import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import me.loshine.gallerypicker.Configuration;
 import me.loshine.gallerypicker.entity.MediaBucket;
 import me.loshine.gallerypicker.entity.MediaFile;
 import me.loshine.gallerypicker.model.MediaModel;
@@ -27,13 +28,15 @@ public class MediaPresenter implements MediaContract.Presenter {
     private int mPageSize = 40;
 
     private MediaModel mModel;
+    private Configuration mConfiguration;
 
-    public MediaPresenter(MediaFragment view) {
+    public MediaPresenter(MediaFragment view, Configuration configuration) {
         mView = view;
         mContext = view.getContext();
         mItems = new ArrayList<>();
         mBuckets = new ArrayList<>();
         mModel = new MediaRepository(mContext);
+        mConfiguration = configuration;
     }
 
     @Override
@@ -52,7 +55,7 @@ public class MediaPresenter implements MediaContract.Presenter {
             loadBuckets();
             mView.onLoadBucketsComplete();
         }
-        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), mPageIndex, mPageSize));
+        mItems.addAll(getMediaList(mMediaBucket.getBucketId()));
         mPageIndex++;
         mView.onLoadComplete();
     }
@@ -62,13 +65,25 @@ public class MediaPresenter implements MediaContract.Presenter {
         mPageIndex = 1;
         mMediaBucket = mediaBucket;
         mItems.clear();
-        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), mPageIndex, mPageSize));
+        mItems.addAll(getMediaList(mMediaBucket.getBucketId()));
         mPageIndex++;
         mView.onReloadComplete();
     }
 
     private void loadBuckets() {
-        mBuckets.addAll(mModel.getImageBucket());
+        if (mConfiguration.getMode() == Configuration.MODE_IMAGE) {
+            mBuckets.addAll(mModel.getImageBucket());
+        } else {
+            mBuckets.addAll(mModel.getVideoBucket());
+        }
         mMediaBucket = mBuckets.get(0);
+    }
+
+    private List<MediaFile> getMediaList(String bucketId) {
+        if (mConfiguration.getMode() == Configuration.MODE_IMAGE) {
+            return mModel.getImageMediaList(bucketId, mPageIndex, mPageSize);
+        } else {
+            return mModel.getVideoMediaList(bucketId, mPageIndex, mPageSize);
+        }
     }
 }

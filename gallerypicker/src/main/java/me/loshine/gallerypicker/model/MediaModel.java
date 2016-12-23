@@ -14,6 +14,8 @@ public interface MediaModel {
 
     List<MediaFile> getImageMediaList(String bucketId, int pageIndex, int pageSize);
 
+    List<MediaFile> getVideoMediaList(String bucketId, int pageIndex, int pageSize);
+
     List<MediaBucket> getAllBucket(boolean isImage);
 
     List<MediaBucket> getImageBucket();

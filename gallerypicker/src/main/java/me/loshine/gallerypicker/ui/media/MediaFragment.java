@@ -1,6 +1,7 @@
-package me.loshine.gallerypicker.ui.gallery;
+package me.loshine.gallerypicker.ui.media;
 
 import android.os.Bundle;
+import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.loshine.gallerypicker.Configuration;
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.anim.Animation;
 import me.loshine.gallerypicker.anim.AnimationListener;
@@ -35,6 +37,8 @@ public class MediaFragment extends BaseFragment
         implements MediaContract.View, View.OnClickListener,
         BucketAdapter.OnItemCheckedListener, XRecyclerView.LoadingListener {
 
+    private static final String CONFIGURATION = "configuration";
+
     XRecyclerView mRecyclerView;
     RecyclerView mBucketRecyclerView;
     TextView mBucketNameTextView;
@@ -46,11 +50,16 @@ public class MediaFragment extends BaseFragment
 
     private MediaContract.Presenter mPresenter;
     private boolean isAnimating;
+    private Configuration mConfiguration;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new MediaPresenter(this);
+        Bundle args = getArguments();
+        if (args != null) {
+            mConfiguration = args.getParcelable(CONFIGURATION);
+        }
+        mPresenter = new MediaPresenter(this, mConfiguration);
     }
 
     @Nullable
@@ -92,6 +101,8 @@ public class MediaFragment extends BaseFragment
         mBucketAdapter.setOnItemCheckedListener(this);
         mBucketRecyclerView.setAdapter(mBucketAdapter);
 
+        mBucketNameTextView.setText(mConfiguration.isImage() ?
+                R.string.gallery_all_image : R.string.gallery_all_video);
         mBucketNameTextView.setOnClickListener(this);
         mBucketOverview.setOnClickListener(this);
 
@@ -202,5 +213,51 @@ public class MediaFragment extends BaseFragment
     @Override
     public void onLoadMore() {
         mPresenter.load(false);
+    }
+
+    /**
+     * Builder 模式构造 MediaFragment
+     */
+    public static class Builder {
+
+        Configuration mConfiguration = new Configuration();
+
+        public Builder image() {
+            mConfiguration.setImage();
+            return this;
+        }
+
+        public Builder video() {
+            mConfiguration.setVideo();
+            return this;
+        }
+
+        public Builder radio() {
+            mConfiguration.setRadio(true);
+            return this;
+        }
+
+        public Builder multiple() {
+            mConfiguration.setRadio(false);
+            return this;
+        }
+
+        public Builder maxSize(@IntRange(from = 1) int maxSize) {
+            mConfiguration.setMaxSize(maxSize);
+            return this;
+        }
+
+        public Builder hideCamera() {
+            mConfiguration.setHideCamera(true);
+            return this;
+        }
+
+        public MediaFragment build() {
+            Bundle args = new Bundle();
+            args.putParcelable(CONFIGURATION, mConfiguration);
+            MediaFragment fragment = new MediaFragment();
+            fragment.setArguments(args);
+            return fragment;
+        }
     }
 }

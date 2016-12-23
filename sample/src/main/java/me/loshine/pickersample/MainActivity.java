@@ -3,7 +3,7 @@ package me.loshine.pickersample;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import me.loshine.gallerypicker.ui.gallery.MediaFragment;
+import me.loshine.gallerypicker.ui.media.MediaFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,7 +14,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFragment = new MediaFragment();
+        mFragment = new MediaFragment.Builder()
+                .video()
+                .build();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment, mFragment)

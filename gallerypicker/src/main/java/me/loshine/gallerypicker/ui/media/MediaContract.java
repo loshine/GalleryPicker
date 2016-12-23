@@ -1,4 +1,4 @@
-package me.loshine.gallerypicker.ui.gallery;
+package me.loshine.gallerypicker.ui.media;
 
 import java.util.List;
 
