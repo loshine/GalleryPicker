@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 
 /**
  * 描    述：解决 PhotoView 问题的 ViewPager
- * 作    者：longs@13322.com
+ * 作    者：loshine1992@gmail.com
  * 时    间：2016/12/23
  */
 public class PhotoViewPager extends ViewPager {

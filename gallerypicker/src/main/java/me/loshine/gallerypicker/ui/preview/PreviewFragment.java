@@ -17,7 +17,7 @@ import uk.co.senab.photoview.PhotoView;
 
 /**
  * 描    述：
- * 作    者：longs@13322.com
+ * 作    者：loshine1992@gmail.com
  * 时    间：2016/12/23
  */
 public class PreviewFragment extends BaseFragment {

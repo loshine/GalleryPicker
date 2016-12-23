@@ -9,7 +9,7 @@ import me.loshine.gallerypicker.imageloader.PicassoImageLoader;
 
 /**
  * 描    述：GalleryPicker 单例，使用枚举实现
- * 作    者：longs@13322.com
+ * 作    者：loshine1992@gmail.com
  * 时    间：2016/12/22
  */
 public enum GalleryPicker {

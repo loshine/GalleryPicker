@@ -14,7 +14,7 @@ import java.io.File;
 
 /**
  * 描    述：Picasso 图片加载器
- * 作    者：longs@13322.com
+ * 作    者：loshine1992@gmail.com
  * 时    间：2016/12/22
  */
 public class PicassoImageLoader implements ImageLoader {
