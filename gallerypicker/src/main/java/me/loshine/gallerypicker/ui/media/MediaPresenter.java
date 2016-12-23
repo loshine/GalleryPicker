@@ -57,7 +57,7 @@ public class MediaPresenter implements MediaContract.Presenter {
         }
         mItems.addAll(getMediaList(mMediaBucket.getBucketId()));
         mPageIndex++;
-        mView.onLoadComplete();
+        mView.onLoadComplete(mItems.size());
     }
 
     @Override

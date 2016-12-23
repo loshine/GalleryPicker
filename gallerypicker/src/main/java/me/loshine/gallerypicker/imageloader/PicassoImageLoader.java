@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -44,7 +43,6 @@ public class PicassoImageLoader implements ImageLoader {
                 .placeholder(defaultDrawable)
                 .error(defaultDrawable)
 //                .rotate(rotate)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .networkPolicy(NetworkPolicy.NO_STORE)
                 .config(config)
                 .tag(context);

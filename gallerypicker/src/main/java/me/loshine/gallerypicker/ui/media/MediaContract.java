@@ -14,7 +14,7 @@ public interface MediaContract {
 
     interface View {
 
-        void onLoadComplete();
+        void onLoadComplete(int size);
 
         void onReloadComplete();
 

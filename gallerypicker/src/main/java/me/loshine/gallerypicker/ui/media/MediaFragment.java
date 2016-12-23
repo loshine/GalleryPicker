@@ -124,8 +124,8 @@ public class MediaFragment extends BaseFragment
     }
 
     @Override
-    public void onLoadComplete() {
-        mAdapter.notifyDataSetChanged();
+    public void onLoadComplete(int size) {
+        mAdapter.notifyItemChanged(size - 1);
         mRecyclerView.loadMoreComplete();
     }
 
@@ -136,6 +136,7 @@ public class MediaFragment extends BaseFragment
 
     @Override
     public void onReloadComplete() {
+        mRecyclerView.scrollToPosition(0);
         mAdapter.notifyDataSetChanged();
         mRecyclerView.loadMoreComplete();
     }

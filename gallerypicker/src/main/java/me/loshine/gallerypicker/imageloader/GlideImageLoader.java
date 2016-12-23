@@ -43,7 +43,6 @@ public class GlideImageLoader implements ImageLoader {
         }
         builder.crossFade()
                 .centerCrop()
-                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView);
     }
