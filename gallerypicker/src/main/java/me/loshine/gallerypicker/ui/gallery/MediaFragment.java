@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +32,10 @@ import me.loshine.gallerypicker.ui.preview.PreviewActivity;
  * 时    间：2016/12/22
  */
 public class MediaFragment extends BaseFragment
-        implements MediaContract.View, View.OnClickListener, BucketAdapter.OnItemCheckedListener {
+        implements MediaContract.View, View.OnClickListener,
+        BucketAdapter.OnItemCheckedListener, XRecyclerView.LoadingListener {
 
-    RecyclerView mRecyclerView;
+    XRecyclerView mRecyclerView;
     RecyclerView mBucketRecyclerView;
     TextView mBucketNameTextView;
     View mBucketOverview;
@@ -60,7 +63,7 @@ public class MediaFragment extends BaseFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView = (XRecyclerView) view.findViewById(R.id.recycler_view);
         mBucketRecyclerView = (RecyclerView) view.findViewById(R.id.bucket_recycler_view);
         mBucketNameTextView = (TextView) view.findViewById(R.id.bucket_name);
 
@@ -69,12 +72,15 @@ public class MediaFragment extends BaseFragment
         // item 高度确定的情况下可以提升性能
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        mRecyclerView.setPullRefreshEnabled(false);
+        mRecyclerView.setLoadingMoreEnabled(true);
+        mRecyclerView.setLoadingListener(this);
         mAdapter = new MediaAdapter(mPresenter.getItems());
         mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 List<MediaFile> items = mPresenter.getItems();
-                PreviewActivity.start(getContext(), new ArrayList<>(items), position);
+                PreviewActivity.start(getContext(), new ArrayList<>(items), position - 1);
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -94,7 +100,7 @@ public class MediaFragment extends BaseFragment
                 .setDirection(Animation.DIRECTION_DOWN)
                 .animate();
 
-        mPresenter.load();
+        mPresenter.load(true);
     }
 
     @Override
@@ -109,12 +115,18 @@ public class MediaFragment extends BaseFragment
     @Override
     public void onLoadComplete() {
         mAdapter.notifyDataSetChanged();
+        mRecyclerView.loadMoreComplete();
+    }
+
+    @Override
+    public void onLoadBucketsComplete() {
         mBucketAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onReloadComplete() {
         mAdapter.notifyDataSetChanged();
+        mRecyclerView.loadMoreComplete();
     }
 
     @Override
@@ -163,7 +175,7 @@ public class MediaFragment extends BaseFragment
     @Override
     public void onItemChecked(int position, MediaBucket bucket) {
         bucket.setChecked(true);
-        mBucketAdapter.notifyItemChanged(position);
+        mBucketAdapter.notifyItemChanged(position - 1);
         mBucketNameTextView.setText(bucket.getBucketName());
         mBucketNameTextView.setEnabled(false);
         mPresenter.reloadMediaList(bucket);
@@ -180,5 +192,15 @@ public class MediaFragment extends BaseFragment
                     })
                     .animate();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        // 不需要实现
+    }
+
+    @Override
+    public void onLoadMore() {
+        mPresenter.load(false);
     }
 }

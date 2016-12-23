@@ -23,6 +23,9 @@ public class MediaPresenter implements MediaContract.Presenter {
     private List<MediaBucket> mBuckets;
     private MediaBucket mMediaBucket;
 
+    private int mPageIndex = 1;
+    private int mPageSize = 40;
+
     private MediaModel mModel;
 
     public MediaPresenter(MediaFragment view) {
@@ -44,18 +47,28 @@ public class MediaPresenter implements MediaContract.Presenter {
     }
 
     @Override
-    public void load() {
-        mBuckets.addAll(mModel.getImageBucket());
-        mMediaBucket = mBuckets.get(0);
-        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), 1, 40));
+    public void load(boolean isFirst) {
+        if (isFirst) {
+            loadBuckets();
+            mView.onLoadBucketsComplete();
+        }
+        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), mPageIndex, mPageSize));
+        mPageIndex++;
         mView.onLoadComplete();
     }
 
     @Override
     public void reloadMediaList(MediaBucket mediaBucket) {
+        mPageIndex = 1;
         mMediaBucket = mediaBucket;
         mItems.clear();
-        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), 1, 40));
+        mItems.addAll(mModel.getImageMediaList(mMediaBucket.getBucketId(), mPageIndex, mPageSize));
+        mPageIndex++;
         mView.onReloadComplete();
+    }
+
+    private void loadBuckets() {
+        mBuckets.addAll(mModel.getImageBucket());
+        mMediaBucket = mBuckets.get(0);
     }
 }

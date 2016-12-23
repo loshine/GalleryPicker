@@ -17,6 +17,8 @@ public interface MediaContract {
         void onLoadComplete();
 
         void onReloadComplete();
+
+        void onLoadBucketsComplete();
     }
 
     interface Presenter {
@@ -25,7 +27,7 @@ public interface MediaContract {
 
         List<MediaBucket> getBucketList();
 
-        void load();
+        void load(boolean isFirst);
 
         void reloadMediaList(MediaBucket mediaBucket);
     }
