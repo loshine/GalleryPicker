@@ -22,7 +22,7 @@ import me.loshine.gallerypicker.entity.MediaFile;
  * 作    者：loshine1992@gmail.com
  * 时    间：2016/12/23
  */
-public class PreviewActivity extends AppCompatActivity {
+public class PreviewActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
     private static final String MEDIA_FILE_LIST = "media_file_list";
     private static final String MEDIA_POSITION = "media_position";
@@ -46,6 +46,8 @@ public class PreviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mMediaFiles = intent.getParcelableArrayListExtra(MEDIA_FILE_LIST);
         mPosition = intent.getIntExtra(MEDIA_POSITION, 0);
+        mToolbar.setTitle(getString(R.string.gallery_preview_title, mPosition + 1, mMediaFiles.size()));
+        setSupportActionBar(mToolbar);
 
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -61,6 +63,7 @@ public class PreviewActivity extends AppCompatActivity {
         });
 
         mViewPager.setCurrentItem(mPosition, false);
+        mViewPager.addOnPageChangeListener(this);
     }
 
     public static void start(Context context, @NonNull ArrayList<MediaFile> mediaFiles, int position) {
@@ -68,5 +71,20 @@ public class PreviewActivity extends AppCompatActivity {
         intent.putParcelableArrayListExtra(MEDIA_FILE_LIST, mediaFiles);
         intent.putExtra(MEDIA_POSITION, position);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        mToolbar.setTitle(getString(R.string.gallery_preview_title, position + 1, mMediaFiles.size()));
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

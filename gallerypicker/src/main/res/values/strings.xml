@@ -5,4 +5,6 @@
     <string name="gallery_all_image">所有图片</string>
     <string name="gallery_all_video">所有视频</string>
     <string name="gallery_bucket_image_count">%1$d张</string>
+    <string name="gallery_action_choose">选中</string>
+    <string name="gallery_preview_title">%1$d/%2$d</string>
 </resources>
