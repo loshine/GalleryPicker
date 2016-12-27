@@ -9,17 +9,21 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/preview_bar_height"
         android:layout_alignParentBottom="true"
-        android:background="#000000"
+        android:background="#222222"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
 
         <TextView
             android:id="@+id/bucket_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:drawableEnd="@drawable/gallery_ic_corner_selector"
+            android:drawablePadding="4dp"
+            android:drawableRight="@drawable/gallery_ic_corner_selector"
+            android:gravity="center_vertical"
             android:text="@string/gallery_all_image"
-            android:textColor="@android:color/white"/>
+            android:textColor="@color/gallery_text_color_selector"/>
 
         <TextView
             android:id="@+id/preview"
@@ -30,7 +34,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/preview_default"
-            android:textColor="@android:color/white"/>
+            android:textColor="@color/gallery_text_color_selector"/>
 
     </RelativeLayout>
 

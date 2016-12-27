@@ -10,5 +10,5 @@ public interface Constants {
     int PREVIEW_SELECT_REQUEST = 1234;
 
     String ID_LIST = "idList";
-
+    String CONFIGURATION = "configuration";
 }

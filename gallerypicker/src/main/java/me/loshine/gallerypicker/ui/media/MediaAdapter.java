@@ -34,6 +34,12 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
     private int mImageSize;
     private Configuration mConfiguration;
 
+    private OnCheckedChangedListener mOnCheckedChangedListener;
+
+    public void setOnCheckedChangedListener(OnCheckedChangedListener onCheckedChangedListener) {
+        mOnCheckedChangedListener = onCheckedChangedListener;
+    }
+
     public MediaAdapter(@NonNull List<MediaFile> files, Configuration configuration) {
         mItems = files;
         mConfiguration = configuration;
@@ -67,7 +73,7 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
         }
     }
 
-    private int getCheckedSize() {
+    public int getCheckedSize() {
         int size = 0;
         for (MediaFile item : mItems) {
             if (item.isChecked()) size++;
@@ -91,12 +97,15 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         // XRecyclerView 的特殊原因需要 -1
-                        if (getCheckedSize() == mConfiguration.getMaxSize()) {
-                            mCheckBox.setChecked(!isChecked);
+                        MediaFile mediaFile = mItems.get(getAdapterPosition() - 1);
+                        if (getCheckedSize() == mConfiguration.getMaxSize() && isChecked && !mediaFile.isChecked()) {
+                            mCheckBox.setChecked(false);
                             Toast.makeText(mContext, "最多只能选择" + mConfiguration.getMaxSize() + "个", Toast.LENGTH_SHORT).show();
                         } else {
-                            MediaFile mediaFile = mItems.get(getAdapterPosition() - 1);
                             mediaFile.setChecked(isChecked);
+                        }
+                        if (mOnCheckedChangedListener != null) {
+                            mOnCheckedChangedListener.onCheckedChanged(buttonView, isChecked, mediaFile);
                         }
                     }
                 });
@@ -110,5 +119,9 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
                     true, mImageSize, mImageSize);
             mCheckBox.setChecked(mediaFile.isChecked());
         }
+    }
+
+    public interface OnCheckedChangedListener {
+        void onCheckedChanged(CompoundButton buttonView, boolean isChecked, MediaFile mediaFile);
     }
 }

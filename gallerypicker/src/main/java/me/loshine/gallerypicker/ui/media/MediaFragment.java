@@ -1,5 +1,6 @@
 package me.loshine.gallerypicker.ui.media;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntRange;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -53,9 +55,17 @@ public class MediaFragment extends BaseFragment
 
     BucketAdapter mBucketAdapter;
 
+    private MediaActivity mActivity;
+
     private MediaContract.Presenter mPresenter;
     private boolean isAnimating;
     private Configuration mConfiguration;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (MediaActivity) context;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,8 +111,17 @@ public class MediaFragment extends BaseFragment
                     intent.putExtra(EXTRA_KEY_MEDIA_FILE, mediaFile);
                     activity.onBackPressed();
                 } else {
-                    PreviewActivity.start(getContext(), new ArrayList<>(items), position - 1);
+                    PreviewActivity.start(getContext(), mConfiguration, new ArrayList<>(items), position - 1);
                 }
+            }
+        });
+        mAdapter.setOnCheckedChangedListener(new MediaAdapter.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, MediaFile mediaFile) {
+                int checkedSize = mAdapter.getCheckedSize();
+                String string = getString(R.string.preview_with_num, checkedSize);
+                mActivity.onCheckedSizeChanged(checkedSize);
+                mPreviewTextView.setText(string);
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -114,6 +133,7 @@ public class MediaFragment extends BaseFragment
         mBucketAdapter.setOnItemCheckedListener(this);
         mBucketRecyclerView.setAdapter(mBucketAdapter);
 
+        mPreviewTextView.setOnClickListener(this);
         mPreviewTextView.setVisibility(mConfiguration.isRadio() ? View.GONE : View.VISIBLE);
         mBucketNameTextView.setText(mConfiguration.isImage() ?
                 R.string.gallery_all_image : R.string.gallery_all_video);
@@ -162,6 +182,15 @@ public class MediaFragment extends BaseFragment
             animateBuckets(mBucketOverview.isShown());
         } else if (id == R.id.bucket_overview) {
             onBackPressed();
+        } else if (id == R.id.preview) {
+            List<MediaFile> items = mPresenter.getItems();
+            ArrayList<MediaFile> checkedItems = new ArrayList<>();
+            for (MediaFile item : items) {
+                if (item.isChecked()) {
+                    checkedItems.add(item);
+                }
+            }
+            PreviewActivity.start(getContext(), mConfiguration, checkedItems, 0);
         }
     }
 
@@ -288,5 +317,11 @@ public class MediaFragment extends BaseFragment
             fragment.setArguments(args);
             return fragment;
         }
+    }
+
+    public interface OnCheckedSizeChangedListener {
+
+        void onCheckedSizeChanged(int size);
+
     }
 }

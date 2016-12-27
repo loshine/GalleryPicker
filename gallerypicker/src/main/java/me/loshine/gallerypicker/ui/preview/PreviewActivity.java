@@ -14,12 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import me.loshine.gallerypicker.Configuration;
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.entity.MediaFile;
 
+import static me.loshine.gallerypicker.Constants.CONFIGURATION;
 import static me.loshine.gallerypicker.Constants.ID_LIST;
 import static me.loshine.gallerypicker.Constants.PREVIEW_SELECT_REQUEST;
 
@@ -39,6 +42,7 @@ public class PreviewActivity extends AppCompatActivity
     ViewPager mViewPager;
     CheckBox mCheckBox;
 
+    private Configuration mConfiguration;
     private ArrayList<MediaFile> mMediaFiles;
     private int mPosition;
 
@@ -53,11 +57,13 @@ public class PreviewActivity extends AppCompatActivity
         mCheckBox = (CheckBox) findViewById(R.id.gallery_preview_checkbox);
 
         Intent intent = getIntent();
+        mConfiguration = intent.getParcelableExtra(CONFIGURATION);
         mMediaFiles = intent.getParcelableArrayListExtra(MEDIA_FILE_LIST);
         mPosition = intent.getIntExtra(MEDIA_POSITION, 0);
         refreshTitle();
         setSupportActionBar(mToolbar);
 
+        mCheckBox.setChecked(mMediaFiles.get(mPosition).isChecked());
         mCheckBox.setOnCheckedChangeListener(this);
 
         mViewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
@@ -111,16 +117,34 @@ public class PreviewActivity extends AppCompatActivity
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        mMediaFiles.get(mPosition).setChecked(isChecked);
+        MediaFile mediaFile = mMediaFiles.get(mPosition);
+        if (mConfiguration.getMaxSize() == getCheckedSize() && isChecked && !mediaFile.isChecked()) {
+            Toast.makeText(this, "最多只能选择" + mConfiguration.getMaxSize() + "个", Toast.LENGTH_SHORT).show();
+            mCheckBox.setChecked(false);
+        } else {
+            mediaFile.setChecked(isChecked);
+        }
+    }
+
+    private int getCheckedSize() {
+        int size = 0;
+        for (MediaFile mediaFile : mMediaFiles) {
+            if (mediaFile.isChecked()) {
+                size++;
+            }
+        }
+        return size;
     }
 
     private void refreshTitle() {
         mToolbar.setTitle(getString(R.string.gallery_preview_title, mPosition + 1, mMediaFiles.size()));
     }
 
-    public static void start(Context context, @NonNull ArrayList<MediaFile> mediaFiles, int position) {
+    public static void start(Context context, Configuration configuration,
+                             @NonNull ArrayList<MediaFile> mediaFiles, int position) {
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, PreviewActivity.class);
+        intent.putExtra(CONFIGURATION, configuration);
         intent.putParcelableArrayListExtra(MEDIA_FILE_LIST, mediaFiles);
         intent.putExtra(MEDIA_POSITION, position);
         activity.startActivityForResult(intent, PREVIEW_SELECT_REQUEST);
