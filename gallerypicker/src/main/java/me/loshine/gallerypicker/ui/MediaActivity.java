@@ -2,9 +2,13 @@ package me.loshine.gallerypicker.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import me.loshine.gallerypicker.R;
+import me.loshine.gallerypicker.entity.MediaFile;
 import me.loshine.gallerypicker.ui.media.MediaFragment;
+
+import static me.loshine.gallerypicker.entity.MediaFile.EXTRA_KEY_MEDIA_FILE;
 
 public class MediaActivity extends AppCompatActivity {
 
@@ -36,6 +40,11 @@ public class MediaActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // 此处显示
+        MediaFile mediaFile = getIntent().getParcelableExtra(EXTRA_KEY_MEDIA_FILE);
+        if (mediaFile != null) {
+            Toast.makeText(this, mediaFile.toString(), Toast.LENGTH_SHORT).show();
+        }
         if (!mFragment.onBackPressed()) {
             super.onBackPressed();
         }

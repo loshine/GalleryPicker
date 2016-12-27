@@ -10,6 +10,8 @@ import android.os.Parcelable;
  */
 public class MediaFile implements Parcelable {
 
+    public static final String EXTRA_KEY_MEDIA_FILE = "media_file";
+
     //图片ID
     private long id;
 

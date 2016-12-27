@@ -15,14 +15,14 @@ import me.loshine.gallerypicker.base.BaseFragment;
 import me.loshine.gallerypicker.entity.MediaFile;
 import uk.co.senab.photoview.PhotoView;
 
+import static me.loshine.gallerypicker.entity.MediaFile.EXTRA_KEY_MEDIA_FILE;
+
 /**
  * 描    述：
  * 作    者：loshine1992@gmail.com
  * 时    间：2016/12/23
  */
 public class PreviewFragment extends BaseFragment {
-
-    private static final String MEDIA_FILE = "media_file";
 
     PhotoView mPhotoView;
 
@@ -33,7 +33,7 @@ public class PreviewFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            mMediaFile = args.getParcelable(MEDIA_FILE);
+            mMediaFile = args.getParcelable(EXTRA_KEY_MEDIA_FILE);
         }
     }
 
@@ -60,7 +60,7 @@ public class PreviewFragment extends BaseFragment {
     public static PreviewFragment newInstance(@NonNull MediaFile file) {
 
         Bundle args = new Bundle();
-        args.putParcelable(MEDIA_FILE, file);
+        args.putParcelable(EXTRA_KEY_MEDIA_FILE, file);
         PreviewFragment fragment = new PreviewFragment();
         fragment.setArguments(args);
         return fragment;

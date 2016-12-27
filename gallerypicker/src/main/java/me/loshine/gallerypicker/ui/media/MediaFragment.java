@@ -1,8 +1,10 @@
 package me.loshine.gallerypicker.ui.media;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +30,8 @@ import me.loshine.gallerypicker.entity.MediaBucket;
 import me.loshine.gallerypicker.entity.MediaFile;
 import me.loshine.gallerypicker.ui.preview.PreviewActivity;
 
+import static me.loshine.gallerypicker.entity.MediaFile.EXTRA_KEY_MEDIA_FILE;
+
 /**
  * 描    述：
  * 作    者：loshine1992@gmail.com
@@ -42,6 +46,7 @@ public class MediaFragment extends BaseFragment
     XRecyclerView mRecyclerView;
     RecyclerView mBucketRecyclerView;
     TextView mBucketNameTextView;
+    TextView mPreviewTextView;
     View mBucketOverview;
 
     MediaAdapter mAdapter;
@@ -75,7 +80,7 @@ public class MediaFragment extends BaseFragment
         mRecyclerView = (XRecyclerView) view.findViewById(R.id.recycler_view);
         mBucketRecyclerView = (RecyclerView) view.findViewById(R.id.bucket_recycler_view);
         mBucketNameTextView = (TextView) view.findViewById(R.id.bucket_name);
-
+        mPreviewTextView = (TextView) view.findViewById(R.id.preview);
         mBucketOverview = view.findViewById(R.id.bucket_overview);
 
         // item 高度确定的情况下可以提升性能
@@ -89,7 +94,15 @@ public class MediaFragment extends BaseFragment
             @Override
             public void onItemClick(int position) {
                 List<MediaFile> items = mPresenter.getItems();
-                PreviewActivity.start(getContext(), new ArrayList<>(items), position - 1);
+                if (mConfiguration.isRadio()) {
+                    FragmentActivity activity = getActivity();
+                    Intent intent = activity.getIntent();
+                    MediaFile mediaFile = items.get(position - 1);
+                    intent.putExtra(EXTRA_KEY_MEDIA_FILE, mediaFile);
+                    activity.onBackPressed();
+                } else {
+                    PreviewActivity.start(getContext(), new ArrayList<>(items), position - 1);
+                }
             }
         });
         mRecyclerView.setAdapter(mAdapter);
@@ -101,6 +114,7 @@ public class MediaFragment extends BaseFragment
         mBucketAdapter.setOnItemCheckedListener(this);
         mBucketRecyclerView.setAdapter(mBucketAdapter);
 
+        mPreviewTextView.setVisibility(mConfiguration.isRadio() ? View.GONE : View.VISIBLE);
         mBucketNameTextView.setText(mConfiguration.isImage() ?
                 R.string.gallery_all_image : R.string.gallery_all_video);
         mBucketNameTextView.setOnClickListener(this);
