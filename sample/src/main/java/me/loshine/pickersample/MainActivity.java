@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import me.loshine.gallerypicker.ui.MediaActivity;
-import me.loshine.gallerypicker.ui.media.MediaAdapter;
-import me.loshine.gallerypicker.ui.media.MediaFragment;
+import me.loshine.gallerypicker.ui.media.MediaActivity;
 
 public class MainActivity extends AppCompatActivity {
 

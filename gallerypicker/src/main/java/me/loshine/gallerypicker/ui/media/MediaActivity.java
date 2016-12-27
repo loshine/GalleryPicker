@@ -1,13 +1,17 @@
-package me.loshine.gallerypicker.ui;
+package me.loshine.gallerypicker.ui.media;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.entity.MediaFile;
-import me.loshine.gallerypicker.ui.media.MediaFragment;
 
+import static me.loshine.gallerypicker.Constants.ID_LIST;
+import static me.loshine.gallerypicker.Constants.PREVIEW_SELECT_REQUEST;
 import static me.loshine.gallerypicker.entity.MediaFile.EXTRA_KEY_MEDIA_FILE;
 
 public class MediaActivity extends AppCompatActivity {
@@ -48,5 +52,14 @@ public class MediaActivity extends AppCompatActivity {
         if (!mFragment.onBackPressed()) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK || requestCode != PREVIEW_SELECT_REQUEST) return;
+        ArrayList<Long> idList = (ArrayList<Long>) data.getSerializableExtra(ID_LIST);
+        if (idList == null) return;
+        mFragment.selectImages(idList);
     }
 }

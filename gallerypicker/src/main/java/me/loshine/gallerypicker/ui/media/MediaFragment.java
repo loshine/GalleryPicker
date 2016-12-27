@@ -165,6 +165,20 @@ public class MediaFragment extends BaseFragment
         }
     }
 
+    public void selectImages(List<Long> idList) {
+        List<MediaFile> items = mPresenter.getItems();
+        out:
+        for (Long id : idList) {
+            for (MediaFile mediaFile : items) {
+                if (mediaFile.getId() == id) {
+                    mediaFile.setChecked(true);
+                    continue out;
+                }
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void animateBuckets(boolean isShown) {
         mBucketNameTextView.setEnabled(false);
         if (isAnimating) return;
