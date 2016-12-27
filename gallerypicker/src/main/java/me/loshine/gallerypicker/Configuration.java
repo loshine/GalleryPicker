@@ -53,7 +53,7 @@ public class Configuration implements Parcelable {
     }
 
     public int getMaxSize() {
-        return mMaxSize;
+        return mRadio ? 1 : mMaxSize;
     }
 
     public boolean isHideCamera() {

@@ -84,7 +84,7 @@ public class MediaFragment extends BaseFragment
         mRecyclerView.setPullRefreshEnabled(false);
         mRecyclerView.setLoadingMoreEnabled(true);
         mRecyclerView.setLoadingListener(this);
-        mAdapter = new MediaAdapter(mPresenter.getItems());
+        mAdapter = new MediaAdapter(mPresenter.getItems(), mConfiguration);
         mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {

@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import me.loshine.gallerypicker.Configuration;
 import me.loshine.gallerypicker.GalleryPicker;
 import me.loshine.gallerypicker.R;
 import me.loshine.gallerypicker.base.BaseRecyclerViewAdapter;
@@ -30,9 +32,11 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
     private List<MediaFile> mItems;
     private ColorDrawable mDefaultImage;
     private int mImageSize;
+    private Configuration mConfiguration;
 
-    public MediaAdapter(@NonNull List<MediaFile> files) {
+    public MediaAdapter(@NonNull List<MediaFile> files, Configuration configuration) {
         mItems = files;
+        mConfiguration = configuration;
     }
 
     @Override
@@ -63,6 +67,14 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
         }
     }
 
+    private int getCheckedSize() {
+        int size = 0;
+        for (MediaFile item : mItems) {
+            if (item.isChecked()) size++;
+        }
+        return size;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImageView;
@@ -72,16 +84,26 @@ public class MediaAdapter extends BaseRecyclerViewAdapter<MediaAdapter.ViewHolde
             super(itemView);
             mImageView = (ImageView) itemView.findViewById(R.id.image);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.checkbox);
-            mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    MediaFile mediaFile = mItems.get(getAdapterPosition());
-                    mediaFile.setChecked(isChecked);
-                }
-            });
+            if (mConfiguration.isRadio()) {
+                mCheckBox.setVisibility(View.GONE);
+            } else {
+                mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // XRecyclerView 的特殊原因需要 -1
+                        if (getCheckedSize() == mConfiguration.getMaxSize()) {
+                            mCheckBox.setChecked(!isChecked);
+                            Toast.makeText(mContext, "最多只能选择" + mConfiguration.getMaxSize() + "个", Toast.LENGTH_SHORT).show();
+                        } else {
+                            MediaFile mediaFile = mItems.get(getAdapterPosition() - 1);
+                            mediaFile.setChecked(isChecked);
+                        }
+                    }
+                });
+            }
         }
 
-        public void bind(MediaFile mediaFile) {
+        public void bind(final MediaFile mediaFile) {
             ImageLoader imageLoader = GalleryPicker.INSTANCE.getImageLoader();
             imageLoader.displayCenterCrop(mContext, mediaFile.getOriginalPath(), mImageView, mDefaultImage,
                     GalleryPicker.INSTANCE.getImageConfig(),

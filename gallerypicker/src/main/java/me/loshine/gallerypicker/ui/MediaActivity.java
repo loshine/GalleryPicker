@@ -19,10 +19,13 @@ public class MediaActivity extends AppCompatActivity {
         if (isImage) {
             mFragment = new MediaFragment.Builder()
                     .image()
+                    .multiple()
+                    .maxSize(9)
                     .build();
         } else {
             mFragment = new MediaFragment.Builder()
                     .video()
+                    .radio()
                     .build();
         }
 
